@@ -40,21 +40,34 @@ public class reportengineDAO {
 	private SessionFactory sessionFactory;
 
 	public static String TOTAL_VOLUME = "select t.SYMBOL,sum(t.PRICE*t.TRADE_QUANTITY*c.CONVERSION_RATE) as Volume from TRADE_DATA t,CONVERSION_TABLE c where t.SYMBOL=c.SYMBOL and t.DATETIME between :startdate and :enddate group by t.SYMBOL";
+	
 	// public static String
 	// TOTAL_VOLUME_BY_DATE="select t.SYMBOL,DATE(t.DATETIME),sum(t.PRICE*t.TRADE_QUANTITY*c.CONVERSION_RATE) as Volume from TRADE_DATA t,CONVERSION_TABLE c where t.SYMBOL=c.SYMBOL and t.DATETIME between :startdate and :enddate group by DATE(t.DATETIME)";
 	public static String TOTAL_VOLUME_BY_DATE = "select DATE(t.DATETIME)as TradeDate ,sum(t.PRICE*t.TRADE_QUANTITY*c.CONVERSION_RATE) as Volume from TRADE_DATA t,CONVERSION_TABLE c where t.SYMBOL=c.SYMBOL and t.DATETIME between :startdate and :enddate group by DATE(t.DATETIME)";
-
+	
 	// public static String
 	// TOTAL_VOLUME_BY_COSTCENTER="select c.clientCode,c.costCenterName,a.Volume from (select t.PARTICIPANT_SETTLER,t.PRICE*t.TRADE_QUANTITY*c.CONVERSION_RATE as Volume from TRADE_DATA t,CONVERSION_TABLE c where t.SYMBOL=c.SYMBOL and t.DATETIME between :startdate and :enddate) a,CLIENT_TABLE c where a.PARTICIPANT_SETTLER=c.clientCode";
 	public static String TOTAL_VOLUME_BY_COSTCENTER = "select c.costCenterName,sum(Volume) as Volume from (select t.PARTICIPANT_SETTLER,t.PRICE*t.TRADE_QUANTITY*c.CONVERSION_RATE as Volume from TRADE_DATA t,CONVERSION_TABLE c where t.SYMBOL=c.SYMBOL and t.DATETIME between :startdate and :enddate) a,CLIENT_TABLE c where a.PARTICIPANT_SETTLER=c.clientCode group by c.costCenterCode";
+	
 	//public static String ACTIVE_CUSTOMERS = "select c.clientCode ,c.costCenterName,c.subBrokerName from CLIENT_TABLE c,(select distinct (t.PARTICIPANT_SETTLER) client_temp from TRADE_DATA t where t.DATETIME between :startdate and :enddate) AS clientTbl where client_temp=c.clientCode";
 	public static String ACTIVE_CUSTOMERS = "select c.clientCode ,c.costCenterName,c.subBrokerName from (select distinct(PARTICIPANT_SETTLER) as clientCode from TRADE_DATA t where t.DATETIME between :startdate and :enddate )t,client_table c where t.clientCode=c.clientCode";	
+	
 	//public static String HIGH_VOLUME_CUSTOMERS = "select c.clientCode ,c.costCenterName,c.subBrokerName from CLIENT_TABLE c,(select distinct (c.clientCode) client_temp from TRADE_DATA t where t.DATETIME between :startdate and :enddate) where client_temp=c.clientCode";
-	public static String HIGH_VOLUME_CUSTOMERS = "select c.clientCode,c.costCenterName,c.subBrokerName,a.Volume as Volume from (select t.PARTICIPANT_SETTLER,sum(t.PRICE*t.TRADE_QUANTITY*c.CONVERSION_RATE) as Volume from TRADE_DATA t,CONVERSION_TABLE c where t.SYMBOL=c.SYMBOL and t.DATETIME between :startdate and :enddate group by t.PARTICIPANT_SETTLER order by Volume desc )a,CLIENT_TABLE c where a.PARTICIPANT_SETTLER=c.clientCode;";
-
-	public static String INACTIVE_CUSTOMERS = "select c.clientCode,c.costCenterName,c.subBrokerName from CLIENT_TABLE c where c.clientCode not in (select distinct (t.PARTICIPANT_SETTLER) from TRADE_DATA t where t.DATETIME >= :startdate)";
+	public static String HIGH_VOLUME_CUSTOMERS = "select c.clientCode,c.costCenterName,c.subBrokerName,a.Volume as Volume from (select t.PARTICIPANT_SETTLER,sum(t.PRICE*t.TRADE_QUANTITY*c.CONVERSION_RATE) as Volume from TRADE_DATA t,CONVERSION_TABLE c where t.SYMBOL=c.SYMBOL and t.DATETIME between :startdate and :enddate group by t.PARTICIPANT_SETTLER order by Volume desc )a,CLIENT_TABLE c where a.PARTICIPANT_SETTLER=c.clientCode";
+	
+	//public static String INACTIVE_CUSTOMERS = "select c.clientCode,c.costCenterName,c.subBrokerName from CLIENT_TABLE c where c.clientCode not in (select distinct (t.PARTICIPANT_SETTLER) from TRADE_DATA t where t.DATETIME >= :startdate)";
+	public static String INACTIVE_CUSTOMERS = "select clientCode,costCenterName,subBrokerName from CLIENT_TABLE where clientCode not in (select distinct(PARTICIPANT_SETTLER) from TRADE_DATA where DATETIME >= :startdate )";
+	
+	public static String TRADE_PER_CUSTOMER = "select a.Volume,c.clientCode,c.costCenterName,c.subBrokerName from (select count(*) as Volume,PARTICIPANT_SETTLER from TRADE_DATA where DATETIME between :startdate and :enddate group by PARTICIPANT_SETTLER)a,CLIENT_TABLE c where a.PARTICIPANT_SETTLER=c.clientCode order by Volume desc";	
+	
+	public static String TOTAL_VOLUME_BY_SYMBOL = "select t.SYMBOL,t.PRICE*t.TRADE_QUANTITY*c.CONVERSION_RATE as Volume from TRADE_DATA t,CONVERSION_TABLE c where t.SYMBOL=c.SYMBOL and t.DATETIME between :startdate and :enddate group by t.SYMBOL";
+	
 	public static String NEW_CUSTOMERS = "select c.clientCode,c.costCenterName,c.subBrokerName from CLIENT_TABLE c where c.dateOfJoin >= :startdate";
 
+	public static String CUSTOMER_PER_COSTCENTER = "select costCenterCode,costCenterName,count(*) as Volume from CLIENT_TABLE group by costCenterCode order by Volume desc";
+	
+	public static String INCUSTOMER_PER_COSTCENTER = "select costCenterCode,costCenterName,count(*) as Volume from CLIENT_TABLE where clientCode not in (select distinct(PARTICIPANT_SETTLER) from TRADE_DATA where DATETIME >= :startdate ) group by costCenterCode order by Volume desc";
+	
 	@SuppressWarnings("unchecked")
 	@Transactional
 	public User validateUser(String username, String password) {
