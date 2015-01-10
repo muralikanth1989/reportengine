@@ -1,0 +1,64 @@
+@font-face {
+	font-family: calibri;
+	src: url(fonts/CALIBRI.TTF) format(truetype);
+}
+
+.dashboardOuterView {
+	-webkit-box-shadow: -10px -4px 44px 2px rgba(209,209,209,1);
+-moz-box-shadow: -10px -4px 44px 2px rgba(209,209,209,1);
+box-shadow: -10px -4px 44px 2px rgba(209,209,209,1);
+border: 1px solid #444752;
+
+}
+
+.dashboardOuterView .x-panel-body {
+	background: #fff;
+	border: 0;
+	z-index: 99;
+	margin: 0;
+}
+
+.dashboardOuterView .x-panel-header, .x-nlg .dashboardOuterView .x-panel-header-default-framed-top
+	{
+	background: #444851 !important;
+	box-shadow: none;
+	top: 0 !important;
+	border-radius: 0;
+	-webkit-border-radius: 0;
+	-moz-border-radius: 0;
+	border-color: #5E9DEB;
+	border-width: 0 0 3px !important;
+	margin: 0;
+	padding: 2px 5px 3px;
+}
+
+.dashboardOuterView .x-panel-header-text-container {
+	padding: 1px 5px 0;
+}
+
+.dashboardOuterView .x-toolbar, .x-toolbar-default {
+	/*background: #F0EFF0 !important;*/
+	background: #FFF !important;
+}
+
+.dashboardOuterView .x-panel-header-text {
+	font-size: 13px;
+	font-family: calibri, Candara, Segoe, Segoe UI, Optima, Arial,
+		sans-serif;
+	color: #A6BFC6;
+	font-weight:bold;
+	line-height: 1.5em;
+}
+
+.x-ie .dashboardOuterView .x-panel-header-text {
+	line-height: 1.6em;
+	font-size: 13px;
+	font-family: calibri, Candara, Segoe, Segoe UI, Optima, Arial,
+		sans-serif;
+	color: #2a2a2a;
+}
+
+.dashboardOuterView .x-btn-default-small, .dashboardOuterView .x-btn-default-toolbar-small,
+	.dashboardOuterView .x-btn-default-toolbar-small-icon {
+	padding: 1px 2px 1px 3px !important;
+}

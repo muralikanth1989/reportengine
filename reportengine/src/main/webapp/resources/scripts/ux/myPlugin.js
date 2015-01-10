@@ -1,0 +1,1 @@
+Ext.ns("Ext.ux");Ext.define("Ext.ux.myPlugin",{alias:"plugin.textLabel",constructor:function(a){Ext.apply(this,a);},init:function(b){var a=this;a.combo=b;b.on({render:function(){alert("working");},single:true});}});
